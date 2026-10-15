@@ -21,10 +21,26 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
+          fetch-depth: 0
           distribution: 'temurin'
           java-version: '21'
           # Cache Maven dependencies between runs to speed up builds
           cache: 'maven'
+
+
+      # Analyze code quality and security with SonarCloud
+      # The pipeline fails if the Quality Gate does not pass
+      - name: SonarCloud Analysis
+        working-directory: ./simple-api
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn -B verify sonar:sonar \
+            -Dsonar.projectKey=YOUR_PROJECT_KEY \
+            -Dsonar.organization=YOUR_ORGANIZATION \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.qualitygate.wait=true
+
 
       # Build the app and run the tests
       - name: Build and test with Maven
@@ -69,7 +85,6 @@ jobs:
       - name: Build image and push httpd
         uses: docker/build-push-action@v6
         with:
-          # Replace with your actual httpd folder name (case-sensitive)
           context: ./http-server
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http-server:latest
           push: ${{ github.ref == 'refs/heads/main' }}
