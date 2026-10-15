@@ -43,8 +43,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=dockertp_tp-devops-correction-docker \
-            -Dsonar.organization=dockertp  \
+            -Dsonar.projectKey=DockerTp_docker-project \
+            -Dsonar.organization=dockertp-1  \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.qualitygate.wait=true
 
@@ -120,4 +120,3 @@ jobs:
         run: |
           ansible-playbook -i inventories/setup.yml docker.yml \
             -e "ansible_ssh_private_key_file=$HOME/.ssh/id_rsa"
-
