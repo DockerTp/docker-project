@@ -1,3 +1,4 @@
+
 package fr.takima.training.simpleapi.service;
 
 import fr.takima.training.simpleapi.dao.DepartmentDAO;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Service
 public class DepartmentService {
+
     private final DepartmentDAO departmentDAO;
 
     @Autowired
@@ -18,7 +20,8 @@ public class DepartmentService {
 
     public Department getDepartmentByName(String departmentName) {
         if (departmentName == null || departmentName.length() == 0) {
-            throw new IllegalArgumentException("The department name must not be null or empty.");
+            throw new IllegalArgumentException(
+                    "The department name must not be null or empty.");
         }
 
         return this.departmentDAO.findDepartmentByName(departmentName);
@@ -26,5 +29,16 @@ public class DepartmentService {
 
     public List<Department> getDepartments() {
         return this.departmentDAO.findAll();
+    }
+
+    // Retrieve an existing department using its database ID.
+    public Department getDepartmentById(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Invalid department ID");
+        }
+
+        return departmentDAO.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Department not found"));
     }
 }
